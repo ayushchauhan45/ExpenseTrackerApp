@@ -1,5 +1,6 @@
 package com.example.expensetrackerapp.Expense_feature.data.data_source
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -18,13 +19,13 @@ interface TransactionDao{
     suspend fun insertTransaction(transaction: Transaction)
 
     @Query("SELECT * FROM `transaction` WHERE date >= date('now', 'start of day')")
-     fun getDailyTransaction(): Flow<List<Transaction>>
+     fun getDailyTransaction(): LiveData<Flow<List<Transaction>>>
 
     @Query("SELECT * FROM `transaction` WHERE date >= date('now', '-7 days')")
-     fun getWeeklyTransaction(): Flow<List<Transaction>>
+     fun getWeeklyTransaction(): LiveData<Flow<List<Transaction>>>
 
     @Query("SELECT * FROM `Transaction` WHERE strftime('%Y-%m',date) >= strftime('%Y-%m', 'now')")
-     fun getMonthlyTransaction(): Flow<List<Transaction>>
+     fun getMonthlyTransaction(): LiveData<Flow<List<Transaction>>>
 
      @Update
      suspend fun updateTransaction(transaction: Transaction)
