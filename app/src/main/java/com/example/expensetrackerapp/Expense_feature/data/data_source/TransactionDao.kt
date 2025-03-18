@@ -17,13 +17,13 @@ interface TransactionDao{
     suspend fun insertTransaction(transaction: Transaction)
 
     @Query("SELECT * FROM `transaction` WHERE date >= date('now', 'start of day')")
-     fun getDailyTransaction(): LiveData<Flow<List<Transaction>>>
+     fun getDailyTransaction(): Flow<List<Transaction>>
 
     @Query("SELECT * FROM `transaction` WHERE date >= date('now', '-7 days')")
-     fun getWeeklyTransaction(): LiveData<Flow<List<Transaction>>>
+     fun getWeeklyTransaction(): Flow<List<Transaction>>
 
     @Query("SELECT * FROM `Transaction` WHERE strftime('%Y-%m',date) >= strftime('%Y-%m', 'now')")
-     fun getMonthlyTransaction(): LiveData<Flow<List<Transaction>>>
+     fun getMonthlyTransaction(): Flow<List<Transaction>>
 
      @Update
      suspend fun updateTransaction(transaction: Transaction)

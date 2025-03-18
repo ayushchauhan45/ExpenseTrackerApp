@@ -19,7 +19,7 @@ interface UserDao{
     suspend fun insertUser(user: User)
 
     @Query("SELECT * FROM user")
-    fun getAllUsers(): Flow<User>
+    fun getUser(): User
 
     @Transaction
     @Query("SELECT * FROM user WHERE id = :userId")
