@@ -20,10 +20,13 @@ data class Transaction(
     val transactionId: Int?= null,
     val amount: Double,
     val category: String,
-    val date: Date,
+    val date: String,
     val debit:Boolean,
     val credit:Boolean,
     val cash: Boolean,
     val card:Boolean,
     val upi:Boolean
-)
+){
+    class InvalidTransactionException(message: String): Exception(message)
+
+}

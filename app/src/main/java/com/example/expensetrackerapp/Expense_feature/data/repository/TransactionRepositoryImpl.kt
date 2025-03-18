@@ -10,12 +10,13 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class TransactionRepositoryImpl @Inject constructor(
-    private val transactionDao: TransactionDao,
-    private val userDao:UserDao
+    private val transactionDao: TransactionDao
 ): TransactionRepository {
-    override suspend fun insertTransaction(transaction: Transaction,user: User) {
+    override suspend fun insertTransaction(transaction: Transaction) {
+        if (transaction.category.isBlank()){
+            throw Transaction.InvalidTransactionException("The category of the transaction can't be empty")
+        }
         transactionDao.insertTransaction(transaction)
-        userDao.updateUser(user)
     }
 
     override fun getDailyTransaction(): Flow<List<Transaction>> {

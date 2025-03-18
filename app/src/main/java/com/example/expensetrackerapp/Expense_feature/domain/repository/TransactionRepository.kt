@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface TransactionRepository {
 
-    suspend fun insertTransaction(transaction: Transaction, user: User)
+    suspend fun insertTransaction(transaction: Transaction)
 
     fun getDailyTransaction(): Flow<List<Transaction>>
 

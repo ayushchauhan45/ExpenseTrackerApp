@@ -1,6 +1,6 @@
 package com.example.expensetrackerapp.Expense_feature.presentation.components
 
-data class ExpenseTextFieldState(
-    val value: String = "",
+data class ExpenseCategoryTextFieldState(
+    val text: String = "",
     val isFocused: Boolean = false
 )

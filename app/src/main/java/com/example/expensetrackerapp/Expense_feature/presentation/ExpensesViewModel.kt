@@ -1,15 +1,26 @@
 package com.example.expensetrackerapp.Expense_feature.presentation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.State
+import androidx.lifecycle.viewModelScope
+import com.example.expensetrackerapp.Expense_feature.domain.model.Transaction
 import com.example.expensetrackerapp.Expense_feature.domain.repository.TransactionRepository
 import com.example.expensetrackerapp.Expense_feature.domain.repository.UserRepository
-import com.example.expensetrackerapp.Expense_feature.presentation.components.ExpenseTextFieldState
+import com.example.expensetrackerapp.Expense_feature.presentation.components.ExpenseAmountTextFieldState
+import com.example.expensetrackerapp.Expense_feature.presentation.components.ExpenseCategoryTextFieldState
 import com.example.expensetrackerapp.Expense_feature.presentation.components.ExpenseTypeState
 import com.example.expensetrackerapp.Expense_feature.presentation.components.TransactionEvents
 import com.example.expensetrackerapp.Expense_feature.presentation.components.TransactionMediumType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 import javax.inject.Inject
 
 
@@ -20,8 +31,11 @@ class ExpensesViewModel @Inject constructor(
 ):ViewModel() {
 
 
-    private val _expenseTextState = mutableStateOf(ExpenseTextFieldState())
-    val expenseText:State<ExpenseTextFieldState> = _expenseTextState
+    private val _expenseAmountTextState = mutableStateOf(ExpenseAmountTextFieldState())
+    val expenseAmountText:State<ExpenseAmountTextFieldState> = _expenseAmountTextState
+
+    private val _expenseCategoryTextState = mutableStateOf(ExpenseCategoryTextFieldState())
+    val expenseCategoryText:State<ExpenseCategoryTextFieldState> = _expenseCategoryTextState
 
     private val _expenseTypeState = mutableStateOf(ExpenseTypeState())
     val expenseType:State<ExpenseTypeState> = _expenseTypeState
@@ -29,6 +43,10 @@ class ExpensesViewModel @Inject constructor(
     private val _transactionMediumTypeState = mutableStateOf(TransactionMediumType())
     val transactionMediumType:State<TransactionMediumType> = _transactionMediumTypeState
 
+    private val _eventFlow =  MutableSharedFlow<UiEvent>()
+    val eventFlow =  _eventFlow.asSharedFlow()
+
+    @RequiresApi(Build.VERSION_CODES.O)
     fun onEvent(event: TransactionEvents){
         when(event){
             is TransactionEvents.OnExpenseTypeChange -> {
@@ -45,15 +63,55 @@ class ExpensesViewModel @Inject constructor(
                 )
 
             }
-            is TransactionEvents.OnValueChange -> {
-                _expenseTextState.value = _expenseTextState.value.copy(
-                    value = event.value
+            is TransactionEvents.OnAmountValueChange -> {
+                _expenseAmountTextState.value = _expenseAmountTextState.value.copy(
+                    amount = event.value
                 )
+            }
 
+            TransactionEvents.SaveTransaction -> {
+                viewModelScope.launch {
+                    try {
+                        transactionRepository.insertTransaction(
+                            Transaction(
+                                amount = expenseAmountText.value.amount.toDoubleOrNull() ?: 0.0,
+                                category = expenseCategoryText.value.text ,
+                                date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy:MM:dd", Locale.getDefault())),
+                                debit = expenseType.value.debit,
+                                credit = expenseType.value.credit,
+                                cash = transactionMediumType.value.cash,
+                                card = transactionMediumType.value.card,
+                                upi = transactionMediumType.value.upi
+                            )
+                        )
+                        _eventFlow.emit(UiEvent.SaveTransaction)
+                    }catch (e: Transaction.InvalidTransactionException){
+                      e.message
+                    }
+                }
+            }
+           is TransactionEvents.OnCategoryValueChange ->{
+                _expenseCategoryTextState.value = _expenseCategoryTextState.value.copy(
+                    text = event.value
+                )
             }
         }
+    }
 
-
+    fun getDailyTransaction(){
+        viewModelScope.launch {
+            transactionRepository.getDailyTransaction()
+        }
+    }
+    fun getWeeklyTransaction(){
+        viewModelScope.launch {
+            transactionRepository.getWeeklyTransaction()
+        }
+    }
+    fun getMonthlyTransaction(){
+        viewModelScope.launch {
+            transactionRepository.getMonthlyTransaction()
+        }
     }
 
 
