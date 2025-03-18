@@ -20,7 +20,10 @@ data class Transaction(
     val transactionId: Int?= null,
     val amount: Double,
     val category: String,
-    val type: String,
     val date: Date,
-    val paymentType: String
+    val debit:Boolean,
+    val credit:Boolean,
+    val cash: Boolean,
+    val card:Boolean,
+    val upi:Boolean
 )

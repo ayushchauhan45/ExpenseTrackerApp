@@ -9,6 +9,9 @@ data class User(
     @PrimaryKey(autoGenerate = true)
     val id: Int?= null,
     val name: String,
-    val balance: Double =0.0,
-    val spent: Double= 0.0,
-)
+    val balance: Double ,
+    val spent: Double,
+){
+    class InvalidUserException(message: String): Exception(message)
+
+}
