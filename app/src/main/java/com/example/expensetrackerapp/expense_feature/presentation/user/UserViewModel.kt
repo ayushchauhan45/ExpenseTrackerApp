@@ -6,6 +6,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
+import com.example.expensetrackerapp.expense_feature.domain.model.Transaction
+import com.example.expensetrackerapp.expense_feature.domain.model.User
 import com.example.expensetrackerapp.expense_feature.domain.repository.UserRepository
 import com.example.expensetrackerapp.expense_feature.presentation.user.component.TransactionState
 import com.example.expensetrackerapp.expense_feature.presentation.user.component.UserState
@@ -14,6 +16,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,8 +36,6 @@ class UserViewModel @Inject constructor(
     private var getTransactionJob: Job? = null
 
 
-    private var currentUserId: Int? = null
-
     init {
         savedStateHandle.get<Int>("userId")?.let { userId ->
             getTransactionJob?.cancel()
@@ -50,6 +51,43 @@ class UserViewModel @Inject constructor(
               }.launchIn(viewModelScope)
         }
     }
+
+
+    fun addUser(){
+        viewModelScope.launch {
+            userRepository.insertUser(
+                User(
+                    name  = nameTextFieldState.value.text,
+                    balance = 0.0,
+                    spent = 0.0
+                )
+            )
+        }
+    }
+
+    fun updateUserWhenCredit(name:String, amount :Double, balance:Double,spent:Double){
+        viewModelScope.launch {
+            userRepository.updateUser(
+                User(
+                    name = name  ,
+                    balance = balance + amount,
+                    spent = spent
+                )
+            )
+        }
+    }
+    fun updateUserWhenDebit(name:String, amount :Double, balance:Double,spent:Double){
+        viewModelScope.launch {
+            userRepository.updateUser(
+                User(
+                    name = name  ,
+                    balance = balance - amount,
+                    spent = spent + amount
+                )
+            )
+        }
+    }
+
 
 
 }
