@@ -17,14 +17,14 @@ import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun ExpenseChart(balance: Float, spent: Float) {
+fun ExpenseChart(balance: Double, spent: Double) {
     val total = balance + spent
     val spentPercentage = if (total > 0) spent / total else 0f
-    val balancePercentage = 1f - spentPercentage
+    val balancePercentage = 1f - spentPercentage.toFloat()
 
     // Animated values for smooth transitions
     val animatedSpentPercentage by animateFloatAsState(
-        targetValue = spentPercentage,
+        targetValue = spentPercentage.toFloat(),
         animationSpec = tween(durationMillis = 1000, easing = LinearOutSlowInEasing),
         label = "Spent Animation"
     )
