@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.expensetrackerapp.expense_feature.domain.model.User
+import com.example.expensetrackerapp.expense_feature.presentation.user.component.UserState
 
 @Composable
 fun UserItem(

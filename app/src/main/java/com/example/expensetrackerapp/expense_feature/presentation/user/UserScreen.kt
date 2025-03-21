@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.expensetrackerapp.expense_feature.domain.model.User
 import com.example.expensetrackerapp.expense_feature.presentation.transaction.TransactionViewModel
 
 @Composable
@@ -31,7 +32,7 @@ fun UserScreen(
     userViewModel: UserViewModel = hiltViewModel(),
     transactionViewModel: TransactionViewModel = hiltViewModel()
 ){
-   val userState = userViewModel.userState.value
+   val userState = userViewModel.userState
    val transactionState = userViewModel.transactionState
     var isSelected by remember { mutableStateOf("All") }
 
@@ -45,7 +46,7 @@ fun UserScreen(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        Text(text = userState.name,
+        Text(text = userState.value.name,
             fontSize = 50.sp,
             fontWeight = FontWeight.Bold
         )
@@ -85,6 +86,8 @@ fun UserScreen(
             )
         }
         Spacer(modifier = Modifier.height(24.dp))
+
+
 
 
 
