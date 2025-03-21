@@ -8,15 +8,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.expensetrackerapp.R
@@ -28,52 +31,62 @@ fun TransactionItem(
 ){
 
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().padding(
+            start = 10.dp,
+            end = 10.dp,
+        ).padding(10.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ){
-       Box {
-            Icon(
-                painter = painterResource(id = getIcon(transaction.category)),
-                contentDescription = null
-            )
-            Spacer(modifier = Modifier.width(8.dp))
+       Box(
 
-            Column(
-                verticalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Text(
-                    text = transaction.category,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontSize = 16.sp
-                )
-                if (transaction.upi) {
-                    Text(
-                        text = "UPI",
-                        style = MaterialTheme.typography.bodySmall,
-                        fontSize = 12.sp
-                    )
-                }
-                if (transaction.card) {
-                    Text(
-                        text = "Card",
-                        style = MaterialTheme.typography.bodySmall,
-                        fontSize = 12.sp
-                    )
-                }
-                if (transaction.cash) {
-                    Text(
-                        text = "Cash",
-                        style = MaterialTheme.typography.bodySmall,
-                        fontSize = 12.sp
-                    )
-                }
-            }
+       ) {
+          Row(
+              verticalAlignment = Alignment.CenterVertically
+          )  {
+               Icon(
+                   painter = painterResource(id = getIcon(transaction.category)),
+                   contentDescription = null,
+                   modifier = Modifier
+               )
+               Spacer(modifier = Modifier.width(8.dp))
+
+               Column(
+                   verticalArrangement = Arrangement.SpaceEvenly
+               ) {
+                   Text(
+                       text = transaction.category,
+                       style = MaterialTheme.typography.bodyMedium,
+                       fontSize = 16.sp
+                   )
+                   if (transaction.upi) {
+                       Text(
+                           text = "UPI",
+                           style = MaterialTheme.typography.bodySmall,
+                           fontSize = 12.sp
+                       )
+                   }
+                   if (transaction.card) {
+                       Text(
+                           text = "Card",
+                           style = MaterialTheme.typography.bodySmall,
+                           fontSize = 12.sp
+                       )
+                   }
+                   if (transaction.cash) {
+                       Text(
+                           text = "Cash",
+                           style = MaterialTheme.typography.bodySmall,
+                           fontSize = 12.sp
+                       )
+                   }
+               }
+           }
        }
         Column(
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
             Text(
-                text = if (transaction.credit) "+₹${transaction.date}" else "-₹${transaction.date}",
+                text = if (transaction.credit) "+₹${transaction.amount}" else "-₹${transaction.amount}",
                 style = MaterialTheme.typography.bodySmall,
                 fontSize = 16.sp
             )
@@ -85,14 +98,9 @@ fun TransactionItem(
             )
 
         }
-
-
-
-
-
     }
-
 }
+
 
 
 fun getIcon(category: String): Int {
