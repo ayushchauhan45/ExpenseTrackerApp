@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.RadioButton
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
@@ -32,13 +33,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.expensetrackerapp.expense_feature.presentation.transaction.components.TransactionEvents
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AddTransactionScreen(
+    transactionViewModel: TransactionViewModel = hiltViewModel()
 ) {
+    val amountTextField = transactionViewModel.expenseAmountText.value
+    val categoryTextField = transactionViewModel.expenseCategoryText.value
+    val transactionMethod = transactionViewModel.transactionMediumType.value
+
 
     Column(
         modifier = Modifier
@@ -86,8 +91,9 @@ fun AddTransactionScreen(
         Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
-                value = "",
+                value = amountTextField.amount,
                 onValueChange = {
+                    transactionViewModel.onEvent(TransactionEvents.OnAmountValueChange(it))
                 },
                 placeholder = {
                     Text(text = "Amount")
@@ -104,8 +110,9 @@ fun AddTransactionScreen(
             Spacer(modifier = Modifier.height(14.dp))
 
             OutlinedTextField(
-                value = "",
+                value = categoryTextField.text,
                 onValueChange = {
+                    transactionViewModel.onEvent(TransactionEvents.OnCategoryValueChange(it))
                 },
                 placeholder = {
                     Text(text = "Category")
@@ -120,14 +127,45 @@ fun AddTransactionScreen(
                     .padding(start = 21.dp),
             )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
-        Text(text = "Payment Type",
+        Text(text = "Payment Method",
             modifier = Modifier.padding(
                 start = 16.dp
             ),
             fontSize = 16.sp,
             fontWeight = FontWeight.W400
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        TransactionRadioButtonItem(
+            isSelected = transactionMethod.cash ,
+            onClick = {
+                transactionMethod.cash = true
+                transactionMethod.card = false
+                transactionMethod.upi = false
+            },
+            text = "Cash",
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        TransactionRadioButtonItem(
+            isSelected = transactionMethod.upi ,
+            onClick = {
+                transactionMethod.upi = true
+                transactionMethod.cash = false
+                transactionMethod.card = false
+            },
+            text = "UPI",
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        TransactionRadioButtonItem(
+            isSelected = transactionMethod.card ,
+            onClick = {
+                transactionMethod.card = true
+                transactionMethod.cash = false
+                transactionMethod.upi = false
+            },
+            text = "Card",
         )
 
     }

@@ -1,7 +1,7 @@
 package com.example.expensetrackerapp.expense_feature.presentation.transaction.components
 
 data class TransactionMediumType(
-    val cash: Boolean = false,
-    val card:Boolean = false,
-    val upi:Boolean = false
+    var cash: Boolean = false,
+    var card:Boolean = false,
+    var upi:Boolean = false
 )
