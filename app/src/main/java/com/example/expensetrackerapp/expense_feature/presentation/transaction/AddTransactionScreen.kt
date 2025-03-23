@@ -43,6 +43,7 @@ fun AddTransactionScreen(
     val amountTextField = transactionViewModel.expenseAmountText.value
     val categoryTextField = transactionViewModel.expenseCategoryText.value
     val transactionMethod = transactionViewModel.transactionMediumType.value
+    val transactionType = transactionViewModel.expenseType.value
 
 
     Column(
@@ -128,6 +129,34 @@ fun AddTransactionScreen(
             )
 
         Spacer(modifier = Modifier.height(20.dp))
+        Text(text = "Payment Type",
+            modifier = Modifier.padding(
+                start = 16.dp
+            ),
+            fontSize = 16.sp,
+            fontWeight = FontWeight.W400
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        TransactionRadioButtonItem(
+            isSelected = transactionType.credit ,
+            onClick = {
+                transactionType.credit = true
+                transactionType.debit = false
+            },
+            text = "Credit",
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        TransactionRadioButtonItem(
+            isSelected = transactionType.debit ,
+            onClick = {
+                transactionType.debit = true
+                transactionType.credit = false
+
+            },
+            text = "Debit",
+        )
+        Spacer(modifier = Modifier.height(20.dp))
 
         Text(text = "Payment Method",
             modifier = Modifier.padding(
@@ -167,7 +196,6 @@ fun AddTransactionScreen(
             },
             text = "Card",
         )
-
     }
 }
 
