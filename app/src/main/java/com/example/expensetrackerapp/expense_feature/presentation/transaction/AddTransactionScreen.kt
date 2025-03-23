@@ -53,13 +53,11 @@ fun AddTransactionScreen(
                 top = 16.dp,
                 start = 12.dp,
                 end = 12.dp
-            ),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ){
+            )){
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(10.dp),
+                .padding(2.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(modifier = Modifier
@@ -88,30 +86,48 @@ fun AddTransactionScreen(
         Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
-            value = "",
-            onValueChange = {
-            },
-            placeholder = {
-                Text(text = "Amount")
-            },
-            enabled = true,
-            modifier = Modifier.background(
-                Color(0xFFF5F5F5)
-            ).fillMaxWidth(fraction = 0.82f).clip(RoundedCornerShape(12.dp)).padding(12.dp),
-        )
-        Spacer(modifier = Modifier.height(8.dp))
+                value = "",
+                onValueChange = {
+                },
+                placeholder = {
+                    Text(text = "Amount")
+                },
+                enabled = true,
+                modifier = Modifier
+                    .background(
+                        Color(0xFFF5F5F5)
+                    )
+                    .fillMaxWidth(fraction = .9f)
+                    .clip(RoundedCornerShape(12.dp))
+                    .padding(start = 21.dp),
+            )
+            Spacer(modifier = Modifier.height(14.dp))
 
-        OutlinedTextField(
-            value = "",
-            onValueChange = {
-            },
-            placeholder = {
-                Text(text = "Category")
-            },
-            enabled = true,
-            modifier = Modifier.background(
-                Color(0xFFF5F5F5)
-            ).fillMaxWidth(fraction = 0.82f).clip(RoundedCornerShape(12.dp)).padding(16.dp),
+            OutlinedTextField(
+                value = "",
+                onValueChange = {
+                },
+                placeholder = {
+                    Text(text = "Category")
+                },
+                enabled = true,
+                modifier = Modifier
+                    .background(
+                        Color(0xFFF5F5F5)
+                    )
+                    .fillMaxWidth(fraction = .9f)
+                    .clip(RoundedCornerShape(12.dp))
+                    .padding(start = 21.dp),
+            )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(text = "Payment Type",
+            modifier = Modifier.padding(
+                start = 16.dp
+            ),
+            fontSize = 16.sp,
+            fontWeight = FontWeight.W400
         )
 
     }
