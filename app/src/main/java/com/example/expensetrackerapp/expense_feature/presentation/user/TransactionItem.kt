@@ -24,7 +24,6 @@ import com.example.expensetrackerapp.expense_feature.domain.model.Transaction
 fun TransactionItem(
   transaction: Transaction
 ){
-
     Row(
         modifier = Modifier.fillMaxWidth().padding(
             start = 10.dp,

@@ -10,10 +10,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.expensetrackerapp.expense_feature.domain.model.User
 import com.example.expensetrackerapp.expense_feature.presentation.transaction.TransactionViewModel
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun UserScreen(
@@ -36,9 +40,32 @@ fun UserScreen(
    val transactionState = userViewModel.transactionState
     var isSelected by remember { mutableStateOf("All") }
 
+
+    LaunchedEffect(key1 = true) {
+        transactionViewModel.eventFlow.collectLatest {event->
+            when(event){
+                TransactionViewModel.UiEvent.SaveTransaction -> {
+                    if (transactionState.value.transaction[0].credit)
+                        userViewModel.updateUserWhenCredit(
+                            name = userState.value.name,
+                            amount = transactionState.value.transaction[0].amount ,
+                            balance = userState.value.balance,
+                            spent = userState.value.spent
+                        )
+                    if (transactionState.value.transaction[0].debit)
+                    userViewModel.updateUserWhenDebit(
+                        name = userState.value.name,
+                        amount = transactionState.value.transaction[0].amount ,
+                        balance = userState.value.balance,
+                        spent = userState.value.spent
+                    )
+                }
+            }
+        }
+    }
+
     Column(
         modifier =  Modifier.fillMaxSize()
-
     ){
         Text(text = "Hello,",
             fontSize = 50.sp
@@ -53,7 +80,9 @@ fun UserScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Row(modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState()),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             TimeIntervalButtons(
@@ -87,18 +116,19 @@ fun UserScreen(
         }
         Spacer(modifier = Modifier.height(24.dp))
 
+        UserItem(
+            user = User(
+                name = userState.value.name,
+                balance = userState.value.balance,
+                spent = userState.value.spent
+            )
+        )
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth()
+        ){
 
-
-
-
-
+        }
     }
-
-
-
-
-
-
 }
 
 

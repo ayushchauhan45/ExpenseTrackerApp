@@ -46,7 +46,7 @@ class UserViewModel @Inject constructor(
                       spent = usersTransaction.user.spent
                   )
                   _transactionState.value = _transactionState.value.copy(
-                      transaction = usersTransaction.transaction
+                      transaction = usersTransaction.transaction.sortedByDescending { it.transactionId }
                   )
               }.launchIn(viewModelScope)
         }

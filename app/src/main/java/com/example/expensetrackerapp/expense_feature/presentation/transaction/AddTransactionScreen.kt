@@ -17,12 +17,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.RadioButton
+import androidx.compose.material.Scaffold
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.expensetrackerapp.expense_feature.presentation.transaction.components.TransactionEvents
+import kotlinx.coroutines.flow.collectLatest
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -46,52 +51,95 @@ fun AddTransactionScreen(
     val transactionType = transactionViewModel.expenseType.value
 
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .clip(
-                RoundedCornerShape(
-                    topStart = 8.dp,
-                    topEnd = 8.dp
-                )
-            )
-            .padding(
-                top = 16.dp,
-                start = 12.dp,
-                end = 12.dp
-            )){
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(2.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(modifier = Modifier
-                .padding(18.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(
-                    color = Color.White,
-                    shape = RectangleShape
-                )
-                .border(width = 2.dp, color = Color(0xFFEAEAEA), shape = RoundedCornerShape(16.dp))){
-            IconButton(
-                    onClick = {}
-            ) {
-                    Icon(imageVector = Icons.Default.KeyboardArrowLeft, contentDescription = null)
+    LaunchedEffect(key1 = true) {
+        transactionViewModel.eventFlow.collectLatest { event->
+            when(event){
+                TransactionViewModel.UiEvent.SaveTransaction -> {
+                    if (transactionType.credit){
+
+                    }
+                }
             }
+
         }
+    }
 
-        Spacer(modifier = Modifier.width(10.dp))
 
-        Text(text = "Add Transaction",
-            modifier = Modifier.padding(14.dp),
-            fontSize = 20.sp,
-            fontWeight = FontWeight.W400
-        )
-        }
-        Spacer(modifier = Modifier.height(12.dp))
+   Scaffold(
+       bottomBar = {
+           Box(
+               modifier = Modifier
+                   .fillMaxWidth()
+                   .padding(16.dp),
+               contentAlignment = Alignment.Center
+           ) {
+               Button(
+                   onClick = {
+                       transactionViewModel.onEvent(TransactionEvents.SaveTransaction)
+                   },
+                   modifier = Modifier.fillMaxWidth(0.9f),
+                   colors = ButtonDefaults.buttonColors(Color(0xFFA4C8A0))
+               ) {
+                   Text(text = "Add")
+               }
+           }
+       }
+   ){padding->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(
+                    RoundedCornerShape(
+                        topStart = 8.dp,
+                        topEnd = 8.dp
+                    )
+                )
+                .padding(
+                    padding
+                )
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(2.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .padding(18.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(
+                            color = Color.White,
+                            shape = RectangleShape
+                        )
+                        .border(
+                            width = 2.dp,
+                            color = Color(0xFFEAEAEA),
+                            shape = RoundedCornerShape(16.dp)
+                        )
+                ) {
+                    IconButton(
+                        onClick = {}
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowLeft,
+                            contentDescription = null
+                        )
+                    }
+                }
 
-        OutlinedTextField(
+                Spacer(modifier = Modifier.width(10.dp))
+
+                Text(
+                    text = "Add Transaction",
+                    modifier = Modifier.padding(14.dp),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.W400
+                )
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedTextField(
                 value = amountTextField.amount,
                 onValueChange = {
                     transactionViewModel.onEvent(TransactionEvents.OnAmountValueChange(it))
@@ -128,80 +176,78 @@ fun AddTransactionScreen(
                     .padding(start = 21.dp),
             )
 
-        Spacer(modifier = Modifier.height(20.dp))
-        Text(text = "Payment Type",
-            modifier = Modifier.padding(
-                start = 16.dp
-            ),
-            fontSize = 16.sp,
-            fontWeight = FontWeight.W400
-        )
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(20.dp))
+            Text(
+                text = "Payment Type",
+                modifier = Modifier.padding(
+                    start = 16.dp
+                ),
+                fontSize = 16.sp,
+                fontWeight = FontWeight.W400
+            )
+            Spacer(modifier = Modifier.height(16.dp))
 
-        TransactionRadioButtonItem(
-            isSelected = transactionType.credit ,
-            onClick = {
-                transactionType.credit = true
-                transactionType.debit = false
-            },
-            text = "Credit",
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        TransactionRadioButtonItem(
-            isSelected = transactionType.debit ,
-            onClick = {
-                transactionType.debit = true
-                transactionType.credit = false
+            TransactionRadioButtonItem(
+                isSelected = transactionType.credit,
+                onClick = {
+                    transactionType.credit = true
+                    transactionType.debit = false
+                },
+                text = "Credit",
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            TransactionRadioButtonItem(
+                isSelected = transactionType.debit,
+                onClick = {
+                    transactionType.debit = true
+                    transactionType.credit = false
 
-            },
-            text = "Debit",
-        )
-        Spacer(modifier = Modifier.height(20.dp))
+                },
+                text = "Debit",
+            )
+            Spacer(modifier = Modifier.height(20.dp))
 
-        Text(text = "Payment Method",
-            modifier = Modifier.padding(
-                start = 16.dp
-            ),
-            fontSize = 16.sp,
-            fontWeight = FontWeight.W400
-        )
-        Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Payment Method",
+                modifier = Modifier.padding(
+                    start = 16.dp
+                ),
+                fontSize = 16.sp,
+                fontWeight = FontWeight.W400
+            )
+            Spacer(modifier = Modifier.height(16.dp))
 
-        TransactionRadioButtonItem(
-            isSelected = transactionMethod.cash ,
-            onClick = {
-                transactionMethod.cash = true
-                transactionMethod.card = false
-                transactionMethod.upi = false
-            },
-            text = "Cash",
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        TransactionRadioButtonItem(
-            isSelected = transactionMethod.upi ,
-            onClick = {
-                transactionMethod.upi = true
-                transactionMethod.cash = false
-                transactionMethod.card = false
-            },
-            text = "UPI",
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        TransactionRadioButtonItem(
-            isSelected = transactionMethod.card ,
-            onClick = {
-                transactionMethod.card = true
-                transactionMethod.cash = false
-                transactionMethod.upi = false
-            },
-            text = "Card",
-        )
+            TransactionRadioButtonItem(
+                isSelected = transactionMethod.cash,
+                onClick = {
+                    transactionMethod.cash = true
+                    transactionMethod.card = false
+                    transactionMethod.upi = false
+                },
+                text = "Cash",
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            TransactionRadioButtonItem(
+                isSelected = transactionMethod.upi,
+                onClick = {
+                    transactionMethod.upi = true
+                    transactionMethod.cash = false
+                    transactionMethod.card = false
+                },
+                text = "UPI",
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            TransactionRadioButtonItem(
+                isSelected = transactionMethod.card,
+                onClick = {
+                    transactionMethod.card = true
+                    transactionMethod.cash = false
+                    transactionMethod.upi = false
+                },
+                text = "Card",
+            )
+        }
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview(showBackground = true)
-@Composable
-fun PreviewAddTransaction(){
-        AddTransactionScreen()
-}
+

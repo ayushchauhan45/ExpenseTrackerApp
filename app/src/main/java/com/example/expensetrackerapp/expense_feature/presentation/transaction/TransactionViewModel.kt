@@ -61,8 +61,8 @@ class TransactionViewModel @Inject constructor(
                     card = !event.transactionMediumTypeState.card,
                     upi = !event.transactionMediumTypeState.upi
                 )
-
             }
+
             is TransactionEvents.OnAmountValueChange -> {
                 _expenseAmountTextState.value = _expenseAmountTextState.value.copy(
                     amount = event.value
