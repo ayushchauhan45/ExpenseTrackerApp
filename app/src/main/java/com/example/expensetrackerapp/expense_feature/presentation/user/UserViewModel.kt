@@ -9,11 +9,15 @@ import androidx.lifecycle.viewModelScope
 import com.example.expensetrackerapp.expense_feature.domain.model.Transaction
 import com.example.expensetrackerapp.expense_feature.domain.model.User
 import com.example.expensetrackerapp.expense_feature.domain.repository.UserRepository
+import com.example.expensetrackerapp.expense_feature.presentation.transaction.TransactionViewModel.UiEvent
 import com.example.expensetrackerapp.expense_feature.presentation.user.component.TransactionState
 import com.example.expensetrackerapp.expense_feature.presentation.user.component.UserState
+import com.example.expensetrackerapp.expense_feature.presentation.user.component.UsersEvents
 import com.example.expensetrackerapp.expense_feature.presentation.user.component.nameTextFieldState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -34,6 +38,9 @@ class UserViewModel @Inject constructor(
     val transactionState:State<TransactionState> = _transactionState
 
     private var getTransactionJob: Job? = null
+
+    private val _eventFlow =  MutableSharedFlow<UserUiEvent>()
+    val eventFlow =  _eventFlow.asSharedFlow()
 
 
     init {
@@ -65,6 +72,22 @@ class UserViewModel @Inject constructor(
         }
     }
 
+    fun onEvent(event: UsersEvents){
+        when(event){
+            is UsersEvents.OnNameValueChange -> {
+                _nameTextFieldState.value = nameTextFieldState.value.copy(
+                    text = event.value
+                )
+            }
+            UsersEvents.SaveTransaction -> {
+               viewModelScope.launch {
+                    addUser()
+                    _eventFlow.emit(UserUiEvent.SaveUser)
+                }
+            }
+        }
+    }
+
     fun updateUserWhenCredit(name:String, amount :Double, balance:Double,spent:Double){
         viewModelScope.launch {
             userRepository.updateUser(
@@ -87,7 +110,8 @@ class UserViewModel @Inject constructor(
             )
         }
     }
-
-
+    sealed interface UserUiEvent{
+        data object SaveUser: UserUiEvent
+    }
 
 }

@@ -22,7 +22,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,7 +37,7 @@ fun UserScreen(
 ){
    val userState = userViewModel.userState
    val transactionState = userViewModel.transactionState
-    var isSelected by remember { mutableStateOf("All") }
+   var isSelected by remember { mutableStateOf("All") }
 
 
     LaunchedEffect(key1 = true) {
@@ -95,6 +94,7 @@ fun UserScreen(
             TimeIntervalButtons(
                 onClick = {
                     isSelected = "Daily"
+                    transactionViewModel.getDailyTransaction()
                 },
                 text = "Daily",
                 isSelected = isSelected == "Daily"
@@ -102,6 +102,7 @@ fun UserScreen(
             TimeIntervalButtons(
                 onClick = {
                     isSelected = "Weekly"
+                    transactionViewModel.getWeeklyTransaction()
                 },
                 text = "Weekly",
                 isSelected = isSelected == "Weekly"
@@ -109,25 +110,59 @@ fun UserScreen(
             TimeIntervalButtons(
                 onClick = {
                     isSelected = "Monthly"
+                    transactionViewModel.getMonthlyTransaction()
                 },
                 text = "Monthly",
                 isSelected = isSelected == "Monthly"
             )
         }
         Spacer(modifier = Modifier.height(24.dp))
-
-        UserItem(
-            user = User(
-                name = userState.value.name,
-                balance = userState.value.balance,
-                spent = userState.value.spent
+        if (isSelected == "All") {
+            UserItem(
+                user = User(
+                    name = userState.value.name,
+                    balance = userState.value.balance,
+                    spent = userState.value.spent
+                )
             )
-        )
-        LazyColumn(
-            modifier = Modifier.fillMaxWidth()
-        ){
+            Spacer(modifier = Modifier.height(24.dp))
 
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                items(transactionState.value.transaction.take(4)) { transaction ->
+                    TransactionItem(transaction)
+                }
+            }
         }
+        if(isSelected == "Daily" ){
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                items(transactionViewModel.dailyTransactions.value){transaction->
+                    TransactionItem(transaction)
+                }
+            }
+        }
+        if(isSelected == "Weekly" ){
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                items(transactionViewModel.weeklyTransactions.value){transaction->
+                    TransactionItem(transaction)
+                }
+            }
+        }
+        if(isSelected == "Daily" ){
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                items(transactionViewModel.monthlyTransactions.value){transaction->
+                    TransactionItem(transaction)
+                }
+            }
+        }
+
     }
 }
 

@@ -51,20 +51,6 @@ fun AddTransactionScreen(
     val transactionType = transactionViewModel.expenseType.value
 
 
-    LaunchedEffect(key1 = true) {
-        transactionViewModel.eventFlow.collectLatest { event->
-            when(event){
-                TransactionViewModel.UiEvent.SaveTransaction -> {
-                    if (transactionType.credit){
-
-                    }
-                }
-            }
-
-        }
-    }
-
-
    Scaffold(
        bottomBar = {
            Box(

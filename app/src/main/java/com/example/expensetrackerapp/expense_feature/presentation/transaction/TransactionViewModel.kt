@@ -15,8 +15,12 @@ import com.example.expensetrackerapp.expense_feature.presentation.transaction.co
 import com.example.expensetrackerapp.expense_feature.presentation.transaction.components.TransactionEvents
 import com.example.expensetrackerapp.expense_feature.presentation.transaction.components.TransactionMediumType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -45,6 +49,12 @@ class TransactionViewModel @Inject constructor(
 
     private val _eventFlow =  MutableSharedFlow<UiEvent>()
     val eventFlow =  _eventFlow.asSharedFlow()
+
+    val dailyTransactions = MutableStateFlow<List<Transaction>>(emptyList())
+    val weeklyTransactions = MutableStateFlow<List<Transaction>>(emptyList())
+    val monthlyTransactions = MutableStateFlow<List<Transaction>>(emptyList())
+
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun onEvent(event: TransactionEvents){
@@ -100,17 +110,23 @@ class TransactionViewModel @Inject constructor(
 
     fun getDailyTransaction(){
         viewModelScope.launch {
-            transactionRepository.getDailyTransaction()
+           transactionRepository.getDailyTransaction().collect{transaction->
+               dailyTransactions.value = transaction
+           }
         }
     }
     fun getWeeklyTransaction(){
         viewModelScope.launch {
-            transactionRepository.getWeeklyTransaction()
+            transactionRepository.getWeeklyTransaction().collect{transaction->
+                weeklyTransactions.value = transaction
+            }
         }
     }
     fun getMonthlyTransaction(){
         viewModelScope.launch {
-            transactionRepository.getMonthlyTransaction()
+            transactionRepository.getMonthlyTransaction().collect{transaction->
+                monthlyTransactions.value = transaction
+            }
         }
     }
 
