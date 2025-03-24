@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
+import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,6 +21,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.example.expensetrackerapp.expense_feature.presentation.constant.Screens
 import com.example.expensetrackerapp.expense_feature.presentation.transaction.components.TransactionEvents
 import com.example.expensetrackerapp.expense_feature.presentation.user.component.UsersEvents
 import kotlinx.coroutines.flow.collectLatest
@@ -28,7 +30,8 @@ import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun WelcomeScreen(
-    userViewModel: UserViewModel = hiltViewModel()
+    userViewModel: UserViewModel = hiltViewModel(),
+    navController: NavController
 ){
     val userState = userViewModel.nameTextFieldState
 
@@ -36,7 +39,7 @@ fun WelcomeScreen(
         userViewModel.eventFlow.collectLatest {event->
             when(event){
                 UserViewModel.UserUiEvent.SaveUser -> {
-
+               navController.navigate(Screens.UserScreen.route)
             }
          }
        }

@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.Flow
 interface UserDao{
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertUser(user: User)
+    suspend fun insertUser(user: User):Long
 
     @Query("SELECT * FROM user")
     fun getUser(): User

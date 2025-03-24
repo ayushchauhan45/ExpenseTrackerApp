@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.expensetrackerapp.expense_feature.domain.model.User
 import com.example.expensetrackerapp.expense_feature.presentation.transaction.TransactionViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -33,7 +34,8 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun UserScreen(
     userViewModel: UserViewModel = hiltViewModel(),
-    transactionViewModel: TransactionViewModel = hiltViewModel()
+    transactionViewModel: TransactionViewModel = hiltViewModel(),
+    navController: NavController
 ){
    val userState = userViewModel.userState
    val transactionState = userViewModel.transactionState
