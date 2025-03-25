@@ -37,13 +37,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.expensetrackerapp.expense_feature.presentation.transaction.components.TransactionEvents
 import kotlinx.coroutines.flow.collectLatest
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AddTransactionScreen(
-    transactionViewModel: TransactionViewModel = hiltViewModel()
+    transactionViewModel: TransactionViewModel = hiltViewModel(),
+    navController: NavController
 ) {
     val amountTextField = transactionViewModel.expenseAmountText.value
     val categoryTextField = transactionViewModel.expenseCategoryText.value
@@ -62,6 +64,7 @@ fun AddTransactionScreen(
                Button(
                    onClick = {
                        transactionViewModel.onEvent(TransactionEvents.SaveTransaction)
+                       navController.navigateUp()
                    },
                    modifier = Modifier.fillMaxWidth(0.9f),
                    colors = ButtonDefaults.buttonColors(Color(0xFFA4C8A0))
