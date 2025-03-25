@@ -29,7 +29,9 @@ import com.example.expensetrackerapp.expense_feature.presentation.ui.theme.Expen
 import com.example.expensetrackerapp.expense_feature.presentation.user.BottomNavigationBar
 import com.example.expensetrackerapp.expense_feature.presentation.user.UserScreen
 import com.example.expensetrackerapp.expense_feature.presentation.user.WelcomeScreen
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private lateinit var sharedPreferences: SharedPreferences
 
