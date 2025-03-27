@@ -15,12 +15,9 @@ import com.example.expensetrackerapp.expense_feature.presentation.transaction.co
 import com.example.expensetrackerapp.expense_feature.presentation.transaction.components.TransactionEvents
 import com.example.expensetrackerapp.expense_feature.presentation.transaction.components.TransactionMediumType
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -82,7 +79,7 @@ class TransactionViewModel @Inject constructor(
             TransactionEvents.SaveTransaction -> {
                 viewModelScope.launch {
                     try {
-                        transactionRepository.insertTransaction(
+                        userRepository.getUser().id?.let {
                             Transaction(
                                 amount = expenseAmountText.value.amount.toDoubleOrNull() ?: 0.0,
                                 category = expenseCategoryText.value.text ,
@@ -91,9 +88,14 @@ class TransactionViewModel @Inject constructor(
                                 credit = expenseType.value.credit,
                                 cash = transactionMediumType.value.cash,
                                 card = transactionMediumType.value.card,
-                                upi = transactionMediumType.value.upi
+                                upi = transactionMediumType.value.upi,
+                                userID = it
                             )
-                        )
+                        }?.let {
+                            transactionRepository.insertTransaction(
+                                it
+                            )
+                        }
                         _eventFlow.emit(UiEvent.SaveTransaction)
                     }catch (e: Transaction.InvalidTransactionException){
                       e.message

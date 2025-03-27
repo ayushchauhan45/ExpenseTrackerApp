@@ -2,7 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("kotlin-kapt")
+    id("dagger.hilt.android.plugin")
+    id ("kotlin-kapt")
+    id("com.google.dagger.hilt.android") version "2.51.1" apply false
 }
 
 android {
@@ -64,8 +66,9 @@ dependencies {
     implementation (libs.androidx.room.runtime)
     kapt (libs.androidx.room.compiler)
     implementation (libs.androidx.room.ktx)
-    implementation (libs.hilt.android)
     kapt (libs.hilt.android.compiler)
+    implementation(libs.hilt.android.v250) // Use the latest version
+    kapt(libs.hilt.compiler)
 
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.navigation.compose)

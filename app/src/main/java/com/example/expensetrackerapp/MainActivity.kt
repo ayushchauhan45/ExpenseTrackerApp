@@ -7,7 +7,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -19,6 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -38,6 +41,7 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE)
         enableEdgeToEdge()
         setContent {
             ExpenseTrackerAppTheme {
@@ -74,13 +78,18 @@ class MainActivity : ComponentActivity() {
                                     }
                                 },
                                 shape = CircleShape,
-                                containerColor = Color(0xFFB7D9A4), // Light Green
-                                elevation = FloatingActionButtonDefaults.elevation(6.dp)
+                                containerColor = Color(0xFFB7D9A4),
+                                elevation = FloatingActionButtonDefaults.elevation(6.dp),
+                                modifier = Modifier
+                                    .size(56.dp)
+                                    .offset(y = (-30).dp)
+                                    .zIndex(1f)
                             ) {
                                 Icon(Icons.Default.Add, contentDescription = "Add", tint = Color.Black)
                             }
                         },
                         bottomBar = { BottomNavigationBar(navController) },
+
                         floatingActionButtonPosition = FabPosition.Center
                     ) {paddingValues ->
                         NavHost(

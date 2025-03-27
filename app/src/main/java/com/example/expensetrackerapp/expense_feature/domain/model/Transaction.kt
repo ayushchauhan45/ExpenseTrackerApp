@@ -10,15 +10,16 @@ import androidx.room.PrimaryKey
         ForeignKey(
             entity = User::class,
             parentColumns = ["id"],
-            childColumns = ["userId"],
+            childColumns = ["userID"],
             onDelete = ForeignKey.CASCADE
         )
     ],
-    indices = [Index(value = ["userId"])]
+    indices = [Index(value = ["userID"])]
 )
 data class Transaction(
     @PrimaryKey(autoGenerate = true)
     val transactionId: Int?= null,
+    val userID: Int,
     val amount: Double,
     val category: String,
     val date: String,
